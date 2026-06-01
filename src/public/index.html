@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevOps Health Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+        <h1> DevOps Health Dashboard</h1>
+	<p class="description">
+	This application demonstrates a production-oriented CI/CD pipeline
+	using GitHub Actions, Docker, and Node.js. It includes health monitoring,
+	runtime metrics, automated testing, and containerized deployment.
+	</p>
+
+        <div class="card">
+            <h2>Application Status</h2>
+            <p id="status">Checking...</p>
+        </div>
+
+        <div class="card">
+            <h2>Server Metrics</h2>
+            <p id="uptime">Loading...</p>
+            <p id="memory">Loading...</p>
+        </div>
+
+        <div class="card">
+            <h2>Version</h2>
+            <p>1.0.0</p>
+        </div>
+    </div>
+
+<script>
+async function loadData() {
+
+    const health = await fetch('/health');
+    const healthData = await health.json();
+
+    document.getElementById('status').innerText =
+        healthData.status;
+
+    const metrics = await fetch('/metrics');
+    const metricData = await metrics.json();
+
+    document.getElementById('uptime').innerText =
+        "Uptime: " + Math.floor(metricData.uptime) + " sec";
+
+    document.getElementById('memory').innerText =
+        "Memory: " +
+        (metricData.memoryUsage / 1024 / 1024).toFixed(2)
+        + " MB";
+}
+
+loadData();
+setInterval(loadData, 5000);
+</script>
+
+</body>
+</html>
